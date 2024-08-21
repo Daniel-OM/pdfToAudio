@@ -8,18 +8,22 @@ files: list = [f for f in os.listdir('books') if f.replace('.pdf', '') not in au
 
 for file in files:
     path = open(os.path.join('books',file), 'rb') 
+    if '.pdf' in file:
+        pdfReader = PdfReader(path)
     
-    pdfReader = PdfReader(path)
-    
-    # extracting the text from the PDF 
-    text = ' '.join([page.extract_text() for page in pdfReader.pages])
+        # extracting the text from the PDF 
+        text = ' '.join([page.extract_text() for page in pdfReader.pages])
+    else:
+        text = path.read()
+        text = text.decode("utf-8")
     
     # reading the text 
     speak = pyttsx3.init() 
     voices = speak.getProperty("voices")
     speak.setProperty("voice", voices[0].id)
-    # speak.say(text)
-    speak.save_to_file(text=text.replace('\n', ' '), filename=os.path.join('audios', '.'.join(file.split('.')[:-1])+'.wav'))
+    speak.setProperty("rate", 150)
+    speak.say(text)
+    # speak.save_to_file(text=text.replace('\n', ' '), filename=os.path.join('audios', '.'.join(file.split('.')[:-1])+'.wav'))
     speak.runAndWait()
 
 
